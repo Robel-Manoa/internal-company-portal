@@ -17,8 +17,8 @@ services:
     depends_on:
       - postgres
     environment:
-      KEY: "replace_with_random_key"
-      SECRET: "replace_with_random_secret"
+      KEY: "9daaae80-6ddf-44ae-b694-848be8af4c40"
+      SECRET: "5vemsUtflbaBu6Pao6RyZerzOO1nFj"
       DB_CLIENT: "pg"
       DB_HOST: "postgres"
       DB_PORT: 5432
