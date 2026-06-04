@@ -1,0 +1,55 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: portal-postgres
+    environment:
+      POSTGRES_DB: portal
+      POSTGRES_USER: portal_user
+      POSTGRES_PASSWORD: portal_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  directus:
+    image: directus/directus:10.13.0
+    container_name: portal-directus
+    depends_on:
+      - postgres
+    environment:
+      KEY: "replace_with_random_key"
+      SECRET: "replace_with_random_secret"
+      DB_CLIENT: "pg"
+      DB_HOST: "postgres"
+      DB_PORT: 5432
+      DB_DATABASE: "portal"
+      DB_USER: "portal_user"
+      DB_PASSWORD: "portal_password"
+      ADMIN_EMAIL: "admin@company.com"
+      ADMIN_PASSWORD: "admin_password"
+    volumes:
+      - ./directus/uploads:/directus/uploads
+      - ./directus/schema:/directus/schema
+    ports:
+      - "8055:8055"
+
+  frontend:
+    build: ./frontend
+    container_name: portal-frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+  backend:
+    build: ./backend
+    container_name: portal-backend
+    ports:
+      - "3001:3000"
+    depends_on:
+      - directus
+    environment:
+      - NODE_ENV=development
+
+volumes:
+  postgres_data:
